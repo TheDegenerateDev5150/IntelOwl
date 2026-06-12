@@ -51,9 +51,14 @@ export const NOTIFICATION_BASE_URI = `${API_BASE_URI}/notification`;
 export const AUTH_BASE_URI = `${API_BASE_URI}/auth`;
 export const APIACCESS_BASE_URI = `${AUTH_BASE_URI}/apiaccess`;
 
+// chatbot (router uses trailing_slash=False, so these paths carry no trailing slash)
+export const CHATBOT_BASE_URI = `${API_BASE_URI}/chatbot`;
+export const CHATBOT_SESSIONS_URI = `${CHATBOT_BASE_URI}/sessions`;
+
 // WEBSOCKETS
 const WEBSOCKET_BASE_URI = "ws";
 export const WEBSOCKET_JOBS_URI = `${WEBSOCKET_BASE_URI}/jobs`;
+export const WEBSOCKET_CHAT_URI = `${WEBSOCKET_BASE_URI}/chat`;
 
 // user event
 export const USER_EVENT_BASE_URI = `${API_BASE_URI}/user_event`;
