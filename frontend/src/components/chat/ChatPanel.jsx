@@ -79,8 +79,8 @@ export function ChatPanel() {
   const badge =
     assistantUnavailable && connectionState === ConnectionState.CONNECTED
       ? UNAVAILABLE_BADGE
-      : CONNECTION_BADGE[connectionState] ??
-        CONNECTION_BADGE[ConnectionState.IDLE];
+      : (CONNECTION_BADGE[connectionState] ??
+        CONNECTION_BADGE[ConnectionState.IDLE]);
 
   return (
     <Offcanvas
