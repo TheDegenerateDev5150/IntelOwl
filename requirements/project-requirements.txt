@@ -112,7 +112,7 @@ defusedxml==0.7.1
 pyzipper==0.3.6
 
 # LangChain / Ollama
-langchain==0.3.25
+langchain==0.3.30
 langchain-ollama==0.3.3
 
 # others
