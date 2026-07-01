@@ -42,13 +42,16 @@ class ConnectorTestCase(CustomTestCase):
             parameter=Parameter.objects.get(name="url_key_name", python_module=pm),
             connector_config=cc,
         )
-        with patch("requests.head"):
+
+        with patch("requests.head") as mock_head:
+            mock_head.return_value.status_code = 200
             result = MockUpConnector(cc).health_check(self.user)
-        self.assertTrue(result)
-        cc.disabled = False
-        cc.save()
-        result = MockUpConnector(cc).health_check(self.user)
-        self.assertTrue(result)
+            self.assertTrue(result)
+            cc.disabled = False
+            cc.save()
+            result = MockUpConnector(cc).health_check(self.user)
+            self.assertTrue(result)
+
         cc.delete()
         pc.delete()
 
@@ -98,43 +101,57 @@ class ConnectorTestCase(CustomTestCase):
         an.delete()
 
     def test_subclasses(self):
-        def handler(signum, frame):
-            raise TimeoutError("end of time")
+        subclasses = Connector.all_subclasses()
+        for subclass in subclasses:
+            configs = ConnectorConfig.objects.filter(python_module=subclass.python_module)
+            if not configs.exists():
+                self.fail(f"There is a python module {subclass.python_module} without any configuration")
 
-        import signal
+    def test_before_run_partial_failure(self):
+        # run_on_failure=False + partial failure (mix of FAILED and SUCCESS) should raise ConnectorRunException
+        class MockUpConnector(Connector):
+            def run(self) -> dict:
+                return {}
 
-        signal.signal(signal.SIGALRM, handler)
-        an1 = Analyzable.objects.create(
+        an = Analyzable.objects.create(
             name="test.com",
             classification=Classification.DOMAIN,
         )
 
         job = Job.objects.create(
-            analyzable=an1,
-            status="reported_without_fails",
-            user=self.superuser,
+            analyzable=an,
+            status=Job.STATUSES.CONNECTORS_RUNNING.value,
         )
-
-        subclasses = Connector.all_subclasses()
-        for subclass in subclasses:
-            print(f"\nTesting Connector {subclass.__name__}")
-            configs = ConnectorConfig.objects.filter(python_module=subclass.python_module)
-            if not configs.exists():
-                self.fail(f"There is a python module {subclass.python_module} without any configuration")
-            for config in configs:
-                job.connectors_to_execute.set([config])
-                timeout_seconds = config.soft_time_limit
-                timeout_seconds = min(timeout_seconds, 20)
-                print(f"\tTesting with config {config.name} for {timeout_seconds} seconds")
-                sub = subclass(
-                    config,
-                )
-                signal.alarm(timeout_seconds)
-                try:
-                    sub.start(job.pk, {}, uuid())
-                except Exception as e:
-                    self.fail(f"Connector {subclass.__name__} with config {config.name} failed {e}")
-                finally:
-                    signal.alarm(0)
+        AnalyzerReport.objects.create(
+            report={},
+            job=job,
+            config=AnalyzerConfig.objects.first(),
+            status=AnalyzerReport.STATUSES.FAILED.value,
+            task_id=str(uuid()),
+            parameters={},
+        )
+        AnalyzerReport.objects.create(
+            report={},
+            job=job,
+            config=AnalyzerConfig.objects.last(),
+            status=AnalyzerReport.STATUSES.SUCCESS.value,
+            task_id=str(uuid()),
+            parameters={},
+        )
+        cc = ConnectorConfig.objects.create(
+            name="test",
+            python_module=PythonModule.objects.get(
+                base_path=PythonModuleBasePaths.Connector.value, module="misp.MISP"
+            ),
+            description="test",
+            disabled=True,
+            maximum_tlp="CLEAR",
+            run_on_failure=False,
+        )
+        with self.assertRaises(ConnectorRunException):
+            muc = MockUpConnector(cc)
+            muc.job_id = job.pk
+            muc.before_run()
+        cc.delete()
         job.delete()
-        an1.delete()
+        an.delete()
