@@ -44,7 +44,7 @@ checkdmarc==5.13.1
 dnspython==2.8.0
 dnstwist[full]==20250130
 google>=3.0.0
-google-cloud-webrisk==1.20.0
+google-cloud-webrisk==1.22.0
 intezer-sdk==1.24.0
 lief==0.15.1
 maxminddb==2.6.0
@@ -57,7 +57,7 @@ pdfid==1.1.0
 pefile==2024.8.26
 Pillow==11.0.0
 pydeep==0.4
-pyelftools==0.31
+pyelftools==0.33
 PyExifTool==0.5.0
 pyhashlookup==1.2.0
 pyimpfuzzy==0.5
@@ -110,6 +110,10 @@ defusedxml==0.7.1
 
 # required by MalwareBazaar Ingestor -> https://bazaar.abuse.ch/api/#download (read the warning)
 pyzipper==0.3.6
+
+# LangChain / Ollama
+langchain==0.3.30
+langchain-ollama==0.3.3
 
 # others
 dateparser==1.2.0

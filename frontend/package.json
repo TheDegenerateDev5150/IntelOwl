@@ -1,6 +1,6 @@
 {
   "name": "intelowl",
-  "version": "6.6.1",
+  "version": "6.7.0",
   "private": true,
   "dependencies": {
     "@certego/certego-ui": "^0.1.19",
@@ -33,6 +33,7 @@
     "reactflow": "^11.11.4",
     "reactstrap": "^9.2.3",
     "recharts": "^2.13.0",
+    "remark-gfm": "^3.0.1",
     "zustand": "^4.5.4"
   },
   "scripts": {

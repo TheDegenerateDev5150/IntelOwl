@@ -2,6 +2,15 @@
 
 [**Upgrade Guide**](https://intelowlproject.github.io/docs/IntelOwl/installation/#update-to-the-most-recent-version)
 
+## [v6.7.0](https://github.com/intelowlproject/IntelOwl/releases/tag/v6.7.0)
+We welcome the first working AI-based integration in IntelOwl! :tada:
+
+We invite all the users to test our new awesome Chatbot! :sunglasses: Check the [official doc](https://intelowlproject.github.io/docs/IntelOwl/chatbot/) for more info.
+
+Mainly this release merges all the developments performed by our Google Summer of Code contributors during the last month:
+* [Francesco Berardi](https://github.com/berardifra): "Integrating a Self-Deployed LLM Chatbot for Threat Intelligence"
+* [Sanjib Behera](https://github.com/sanjib2006): "Integration Ecosystem & Connector Optimization"
+
 ## [v6.6.1](https://github.com/intelowlproject/IntelOwl/releases/tag/v6.6.1)
 A lot of minor contributions to fix bugs and improve maintenance.
 

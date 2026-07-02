@@ -186,3 +186,18 @@ input[type="file"]::file-selector-button {
   position: absolute;
   background: rgb(33, 63, 75);
 }
+
+// chat/
+// Bootstrap's default .btn-close renders a dark glyph that is barely visible on the dark
+// chat drawer. Apply the same filter bootstrap ships in .btn-close-white (reactstrap's
+// OffcanvasHeader hardcodes the btn-close class and exposes no prop to extend it).
+#chat-panel .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+// The header "Assistant" toggle is a <button>, so certego's `a.btn:hover { color: inherit }` rule
+// (which lights up the sibling <a> nav links like Docs on hover) doesn't reach it. Mirror it so the
+// entry brightens to white on hover like the others.
+#chat-toggle-btn:hover {
+  color: inherit !important;
+}
